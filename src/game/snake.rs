@@ -7,28 +7,37 @@ pub enum Direction {
     UP,
     DOWN,
     RIGHT,
-    LEFT
+    LEFT,
 }
 pub struct Snake {
     pub body: VecDeque<Vector2>,
     next_direction: Direction,
     current_direction: Direction,
-    pub add_segment: bool
+    pub add_segment: bool,
 }
 
 impl Snake {
-    pub fn new() -> Self{
+    pub fn new() -> Self {
         Self {
-            body: VecDeque::from([Vector2::new(6.0,9.0), Vector2::new(5.0,9.0), Vector2::new(4.0,9.0)]),
+            body: VecDeque::from([
+                Vector2::new(6.0, 9.0),
+                Vector2::new(5.0, 9.0),
+                Vector2::new(4.0, 9.0),
+            ]),
             next_direction: Direction::RIGHT,
             current_direction: Direction::RIGHT,
-            add_segment: false
+            add_segment: false,
         }
     }
 
-    pub fn draw(&self, d: &mut RaylibDrawHandle, cell_size: i32, color: Color) {
+    pub fn draw(&self, d: &mut RaylibDrawHandle, cell_size: i32, color: Color, offset: f32) {
         for tail in &self.body {
-            let rec = Rectangle::new(tail.x * cell_size as f32, tail.y * cell_size as f32, cell_size as f32, cell_size as f32);
+            let rec = Rectangle::new(
+                offset + tail.x * cell_size as f32,
+                offset + tail.y * cell_size as f32,
+                cell_size as f32,
+                cell_size as f32,
+            );
             d.draw_rectangle_rounded(rec, 0.7, 6, color);
         }
     }
@@ -58,24 +67,27 @@ impl Snake {
         let current_head = self.body.get(0).unwrap();
         match self.next_direction {
             Direction::UP => {
-                self.body.push_front(*current_head + Vector2::new(0.0, -1.0));
+                self.body
+                    .push_front(*current_head + Vector2::new(0.0, -1.0));
                 self.current_direction = Direction::UP;
-            },
+            }
             Direction::DOWN => {
                 self.body.push_front(*current_head + Vector2::new(0.0, 1.0));
                 self.current_direction = Direction::DOWN;
-            },
+            }
             Direction::RIGHT => {
                 self.body.push_front(*current_head + Vector2::new(1.0, 0.0));
                 self.current_direction = Direction::RIGHT;
-            },
+            }
             Direction::LEFT => {
-                self.body.push_front(*current_head + Vector2::new(-1.0, 0.0));
+                self.body
+                    .push_front(*current_head + Vector2::new(-1.0, 0.0));
                 self.current_direction = Direction::LEFT;
             }
         }
-        if !self.add_segment{ // check if we want to add a segment to the snake body or not
-            self.body.pop_back();// if we don't we pop the last segment and thene add a segmet to the head
+        if !self.add_segment {
+            // check if we want to add a segment to the snake body or not
+            self.body.pop_back(); // if we don't we pop the last segment and thene add a segmet to the head
         } else {
             self.add_segment = false;
         }
@@ -97,10 +109,9 @@ impl Snake {
     pub fn check_for_tail_collision(&self) -> bool {
         let mut body_copy = self.body.clone();
         let head = body_copy.pop_front().unwrap();
-        if body_copy.contains(&head){
+        if body_copy.contains(&head) {
             return true;
         }
         return false;
     }
-
 }
