@@ -60,7 +60,7 @@ impl Game {
             Self::DARK_GREEN,
         );
         d.draw_text(
-            format!("{}", self.score).as_str(),
+            &self.score.to_string(),
             Self::OFFSET as i32 - 5,
             Self::OFFSET as i32 + Self::CELLS_NUM as i32 * Self::CELL_SIZE as i32 + 10,
             40,
