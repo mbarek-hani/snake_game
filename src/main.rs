@@ -1,9 +1,7 @@
 mod game;
 use game::Game;
-use once_cell::sync::Lazy;
 use raylib::prelude::*;
 
-static RAYLIB_AUDIO: Lazy<RaylibAudio> = Lazy::new(|| RaylibAudio::init_audio_device().unwrap());
 fn main() {
     let (mut rl, thread) = raylib::init()
         .size(Game::WIDTH as i32, Game::HEIGHT as i32)
@@ -11,7 +9,9 @@ fn main() {
         .vsync()
         .build();
 
-    let mut game = Game::new(&mut rl, &thread, &RAYLIB_AUDIO);
+    let raylib_audio = Box::new(RaylibAudio::init_audio_device().unwrap());
+    let raylib_audio: &'static RaylibAudio = Box::leak(raylib_audio);
+    let mut game = Game::new(&mut rl, &thread, &raylib_audio);
 
     rl.set_target_fps(8);
 
