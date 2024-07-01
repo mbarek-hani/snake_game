@@ -1,6 +1,6 @@
 mod game;
 use game::Game;
-use raylib::prelude::*;
+use raylib::audio::RaylibAudio;
 
 fn main() {
     let (mut rl, thread) = raylib::init()
